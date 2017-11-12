@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
@@ -42,9 +43,13 @@ public abstract class BaseConfigurationFactory<T> implements ConfigurationFactor
     private static final Splitter ESCAPED_DOT_SPLITTER = Splitter.on(Pattern.compile("(?<!\\\\)\\.")).trimResults();
 
     private final Class<T> klass;
+    @Nullable
     private final String propertyPrefix;
     protected final ObjectMapper mapper;
+
+    @Nullable
     private final Validator validator;
+
     private final String formatName;
     private final JsonFactory parserFactory;
 
@@ -60,21 +65,15 @@ public abstract class BaseConfigurationFactory<T> implements ConfigurationFactor
     public BaseConfigurationFactory(JsonFactory parserFactory,
                                     String formatName,
                                     Class<T> klass,
-                                    Validator validator,
+                                    @Nullable Validator validator,
                                     ObjectMapper objectMapper,
-                                    String propertyPrefix) {
+                                    @Nullable String propertyPrefix) {
         this.klass = klass;
         this.formatName = formatName;
         this.propertyPrefix = (propertyPrefix == null || propertyPrefix.endsWith("."))
             ? propertyPrefix : (propertyPrefix + '.');
-        // Sub-classes may choose to omit data-binding; if so, null ObjectMapper passed:
-        if (objectMapper == null) { // sub-class has no need for mapper
-            this.mapper = null;
-            this.parserFactory = null;
-        } else {
-            this.mapper = objectMapper;
-            this.parserFactory = parserFactory;
-        }
+        this.mapper = objectMapper;
+        this.parserFactory = parserFactory;
         this.validator = validator;
     }
 

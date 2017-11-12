@@ -7,6 +7,7 @@ import io.dropwizard.util.Enums;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -39,6 +40,7 @@ public class FuzzyEnumParamConverterProvider implements ParamConverterProvider {
     private final static Joiner JOINER = Joiner.on(", ");
 
     @Override
+    @Nullable
     public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
         if (!rawType.isEnum()) {
             return null;
@@ -51,6 +53,7 @@ public class FuzzyEnumParamConverterProvider implements ParamConverterProvider {
 
         return new ParamConverter<T>() {
             @Override
+            @Nullable
             public T fromString(String value) {
                 if (Strings.isNullOrEmpty(value)) {
                     return null;

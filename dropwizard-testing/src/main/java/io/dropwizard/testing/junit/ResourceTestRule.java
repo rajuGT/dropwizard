@@ -16,14 +16,18 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import javax.annotation.Nullable;
 import javax.validation.Validator;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A JUnit {@link TestRule} for testing Jersey resources.
@@ -116,6 +120,8 @@ public class ResourceTestRule implements TestRule {
     }
 
     private ResourceTestJerseyConfiguration configuration;
+
+    @Nullable
     private JerseyTest test;
 
     private ResourceTestRule(ResourceTestJerseyConfiguration configuration) {
@@ -151,7 +157,7 @@ public class ResourceTestRule implements TestRule {
      * @return the {@link JerseyTest} configured {@link Client}
      */
     public Client client() {
-        return test.client();
+        return getJerseyTest().client();
     }
 
     /**
@@ -161,7 +167,7 @@ public class ResourceTestRule implements TestRule {
      * @return the underlying {@link JerseyTest}
      */
     public JerseyTest getJerseyTest() {
-        return test;
+        return requireNonNull(test);
     }
 
     @Override
@@ -198,7 +204,7 @@ public class ResourceTestRule implements TestRule {
                     base.evaluate();
                 } finally {
                     DropwizardTestResourceConfig.CONFIGURATION_REGISTRY.remove(configuration.getId());
-                    test.tearDown();
+                    requireNonNull(test).tearDown();
                 }
             }
         };

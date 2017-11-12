@@ -1,5 +1,6 @@
 package io.dropwizard.configuration;
 
+import javax.annotation.Nullable;
 import javax.validation.Validator;
 
 import com.fasterxml.jackson.core.JsonFactory;

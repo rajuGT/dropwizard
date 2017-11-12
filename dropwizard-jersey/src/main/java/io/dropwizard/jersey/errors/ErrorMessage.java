@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
+import com.sun.istack.internal.Nullable;
 
 import java.util.Objects;
 
@@ -11,6 +12,8 @@ import java.util.Objects;
 public class ErrorMessage {
     private final int code;
     private final String message;
+
+    @Nullable
     private final String details;
 
     public ErrorMessage(String message) {
@@ -23,7 +26,7 @@ public class ErrorMessage {
 
     @JsonCreator
     public ErrorMessage(@JsonProperty("code") int code, @JsonProperty("message") String message,
-                        @JsonProperty("details") String details) {
+                        @Nullable @JsonProperty("details") String details) {
         this.code = code;
         this.message = message;
         this.details = details;
@@ -40,6 +43,7 @@ public class ErrorMessage {
     }
 
     @JsonProperty("details")
+    @Nullable
     public String getDetails() {
         return details;
     }

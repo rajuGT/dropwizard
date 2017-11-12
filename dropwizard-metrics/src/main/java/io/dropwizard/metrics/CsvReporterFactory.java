@@ -3,11 +3,16 @@ package io.dropwizard.metrics;
 import com.codahale.metrics.CsvReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.io.File;
+import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A factory for configuring and building {@link CsvReporter} instances.
@@ -39,22 +44,23 @@ import java.io.File;
  */
 @JsonTypeName("csv")
 public class CsvReporterFactory extends BaseFormattedReporterFactory {
-    @NotNull
+    @Nullable
     private File file;
 
     @JsonProperty
+    @Nullable
     public File getFile() {
         return file;
     }
 
     @JsonProperty
-    public void setFile(File file) {
+    public void setFile(@Nullable File file) {
         this.file = file;
     }
 
     @Override
     public ScheduledReporter build(MetricRegistry registry) {
-        final boolean creation = file.mkdirs();
+        final boolean creation = requireNonNull(file, "File is not set").mkdirs();
         if (!creation && !file.exists()) {
             throw new RuntimeException("Failed to create" + file.getAbsolutePath());
         }

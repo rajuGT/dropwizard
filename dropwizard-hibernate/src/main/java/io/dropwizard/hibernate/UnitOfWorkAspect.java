@@ -5,7 +5,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.context.internal.ManagedSessionContext;
 
+import javax.annotation.Nullable;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An aspect providing operations around a method with the {@link UnitOfWork} annotation.
@@ -40,8 +43,13 @@ public class UnitOfWorkAspect {
     }
 
     // Context variables
+    @Nullable
     private UnitOfWork unitOfWork;
+
+    @Nullable
     private Session session;
+
+    @Nullable
     private SessionFactory sessionFactory;
 
     public void beforeStart(UnitOfWork unitOfWork) {
@@ -112,12 +120,16 @@ public class UnitOfWorkAspect {
     }
 
     protected void configureSession() {
+        checkNotNull(unitOfWork);
+        checkNotNull(session);
         session.setDefaultReadOnly(unitOfWork.readOnly());
         session.setCacheMode(unitOfWork.cacheMode());
         session.setHibernateFlushMode(unitOfWork.flushMode());
     }
 
     private void beginTransaction() {
+        checkNotNull(unitOfWork);
+        checkNotNull(session);
         if (!unitOfWork.transactional()) {
             return;
         }
@@ -125,6 +137,8 @@ public class UnitOfWorkAspect {
     }
 
     private void rollbackTransaction() {
+        checkNotNull(unitOfWork);
+        checkNotNull(session);
         if (!unitOfWork.transactional()) {
             return;
         }
@@ -135,6 +149,8 @@ public class UnitOfWorkAspect {
     }
 
     private void commitTransaction() {
+        checkNotNull(unitOfWork);
+        checkNotNull(session);
         if (!unitOfWork.transactional()) {
             return;
         }
@@ -144,10 +160,12 @@ public class UnitOfWorkAspect {
         }
     }
 
+    @Nullable
     protected Session getSession() {
         return session;
     }
 
+    @Nullable
     protected SessionFactory getSessionFactory() {
         return sessionFactory;
     }

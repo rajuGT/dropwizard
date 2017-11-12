@@ -6,8 +6,11 @@ import liquibase.Liquibase;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import static java.util.Objects.requireNonNull;
 
 public class DbCommand<T extends Configuration> extends AbstractLiquibaseCommand<T> {
     private static final String COMMAND_NAME_ATTR = "subcommand";
@@ -48,7 +51,8 @@ public class DbCommand<T extends Configuration> extends AbstractLiquibaseCommand
 
     @Override
     public void run(Namespace namespace, Liquibase liquibase) throws Exception {
-        final AbstractLiquibaseCommand<T> subcommand = subcommands.get(namespace.getString(COMMAND_NAME_ATTR));
+        final AbstractLiquibaseCommand<T> subcommand =
+            requireNonNull(subcommands.get(namespace.getString(COMMAND_NAME_ATTR)), "Unable find the command");
         subcommand.run(namespace, liquibase);
     }
 }

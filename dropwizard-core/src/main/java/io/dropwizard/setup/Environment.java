@@ -14,6 +14,7 @@ import io.dropwizard.jetty.MutableServletContextHandler;
 import io.dropwizard.jetty.setup.ServletEnvironment;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 
+import javax.annotation.Nullable;
 import javax.servlet.Servlet;
 import javax.validation.Validator;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -196,6 +197,7 @@ public class Environment {
         return servletContext;
     }
 
+    @Nullable
     public Servlet getJerseyServletContainer() {
         return jerseyServletContainer.getContainer();
     }

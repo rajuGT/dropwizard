@@ -9,6 +9,7 @@ import com.google.common.io.Resources;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
+import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -194,6 +195,7 @@ public class AssetServlet extends HttpServlet {
         }
     }
 
+    @Nullable
     private CachedAsset loadAsset(String key) throws URISyntaxException, IOException {
         checkArgument(key.startsWith(uriPath));
         final String requestedResourcePath = SLASHES.trimFrom(key.substring(uriPath.length()));
